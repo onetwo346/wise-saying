@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wise Saying</title>
+    <title>Akan Wisdom Generator</title>
     <style>
         * {
             margin: 0;
@@ -21,7 +21,6 @@
             overflow: hidden;
         }
 
-        /* Intro Page */
         .intro {
             text-align: center;
             color: white;
@@ -37,21 +36,21 @@
         }
 
         h1 {
-            font-size: 2.5rem;
+            font-size: clamp(1.5rem, 5vw, 2.5rem);
             text-transform: uppercase;
             letter-spacing: 2px;
         }
 
         .info {
             margin-top: 10px;
-            font-size: 1.2rem;
+            font-size: clamp(1rem, 3vw, 1.2rem);
             max-width: 600px;
             opacity: 0.8;
         }
 
         .enter-btn {
             margin-top: 30px;
-            padding: 15px 30px;
+            padding: clamp(10px, 2vw, 15px) clamp(20px, 4vw, 30px);
             font-size: 1.5rem;
             background: #f39c12;
             border: none;
@@ -61,13 +60,16 @@
             animation: pulse 1.5s infinite;
         }
 
+        .enter-btn:focus, .generate-btn:focus {
+            outline: 2px solid #f39c12;
+        }
+
         @keyframes pulse {
             0% { transform: scale(1); }
             50% { transform: scale(1.1); }
             100% { transform: scale(1); }
         }
 
-        /* Main Page */
         .main {
             display: none;
             flex-direction: column;
@@ -76,21 +78,31 @@
             text-align: center;
             width: 100%;
             height: 100vh;
+            padding: 20px;
         }
 
-        .quote-box {
-            max-width: 600px;
+        .quote-container {
+            max-width: 90%;
             background: rgba(255, 255, 255, 0.1);
-            padding: 20px;
+            padding: 25px;
             border-radius: 10px;
             color: white;
-            font-size: 1.5rem;
             margin-bottom: 20px;
             box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
         }
 
+        .quote-content {
+            font-size: clamp(1.2rem, 3vw, 1.8rem);
+            margin-bottom: 15px;
+        }
+
+        .quote-details {
+            font-size: clamp(0.9rem, 2.5vw, 1.2rem);
+            opacity: 0.8;
+        }
+
         .generate-btn {
-            padding: 12px 25px;
+            padding: clamp(10px, 2vw, 12px) clamp(20px, 4vw, 25px);
             font-size: 1.2rem;
             background: #e74c3c;
             border: none;
@@ -104,7 +116,6 @@
             background: #c0392b;
         }
 
-        /* 3D Floating Animation */
         .floating {
             animation: float 3s ease-in-out infinite;
         }
@@ -116,39 +127,77 @@
     </style>
 </head>
 <body>
-
-    <!-- Intro Page -->
     <div class="intro">
-        <h1>Welcome to Wise Saying</h1>
-        <p class="info">Discover ancient Akan wisdom with unlimited quotes. Tap below to enter.</p>
-        <button class="enter-btn">Tap to Enter</button>
+        <h1>Akan Wisdom Journey</h1>
+        <p class="info">Explore the profound wisdom of the Akan people. Each proverb carries a deep life lesson waiting to be discovered.</p>
+        <button class="enter-btn" role="button" tabindex="0">Begin Wisdom Quest</button>
     </div>
 
-    <!-- Main Page -->
     <div class="main">
-        <h1 class="floating">Wise Saying Generator</h1>
-        <div class="quote-box">Tap the button below to get a wise saying...</div>
-        <button class="generate-btn">Generate Wisdom</button>
+        <h1 class="floating">Akan Wisdom Generator</h1>
+        <div class="quote-container">
+            <div class="quote-content">Tap the button below to uncover ancient wisdom...</div>
+            <div class="quote-details"></div>
+        </div>
+        <button class="generate-btn" role="button" tabindex="0">Generate Wisdom</button>
     </div>
 
     <script>
+        const akanSayings = [
+            {
+                akan: "Obi nnim a, obi kyere",
+                english: "If someone doesn't know, another person teaches them",
+                lesson: "Knowledge is shared; no one knows everything. Humility and willingness to learn are key to personal growth.",
+                author: "Akan Proverb"
+            },
+            {
+                akan: "Sɛ wo wu a, na wo te ase",
+                english: "If you die, then you listen from below",
+                lesson: "Listen and take advice while you're alive. Wisdom comes from listening to others, not from stubbornness.",
+                author: "Akan Wisdom"
+            },
+            {
+                akan: "Nsɛnkyerɛne da mu a, ɛda mu da",
+                english: "When the fool lies in wait, he will be caught",
+                lesson: "Deceit and trickery will eventually be exposed. Honesty and integrity are more powerful than cunning.",
+                author: "Akan Teaching"
+            },
+            {
+                akan: "Aboa bi bɛka a, na ɛnka ne ho",
+                english: "When an animal is about to speak, it does not speak about itself",
+                lesson: "True wisdom involves understanding others and being objective, not always talking about oneself.",
+                author: "Akan Proverb"
+            },
+            {
+                akan: "Tí wɔ dua mu a, wɔ dua mu",
+                english: "If you are in a tree, you are in a tree",
+                lesson: "Accept and adapt to your current circumstances. Sometimes you must work with what you have.",
+                author: "Akan Wisdom"
+            }
+        ];
+
+        function getRandomAkanSaying() {
+            const randomIndex = Math.floor(Math.random() * akanSayings.length);
+            const saying = akanSayings[randomIndex];
+            
+            document.querySelector('.quote-content').innerHTML = `
+                <strong>"${saying.akan}"</strong><br>
+                "${saying.english}"
+            `;
+            
+            document.querySelector('.quote-details').innerHTML = `
+                <p><em>Lesson: ${saying.lesson}</em></p>
+                <p>- ${saying.author}</p>
+            `;
+        }
+
         document.querySelector('.enter-btn').addEventListener('click', function() {
             document.querySelector('.intro').style.display = 'none';
             document.querySelector('.main').style.display = 'flex';
+            getRandomAkanSaying(); // Load initial quote
         });
 
-        async function fetchWiseSaying() {
-            try {
-                let response = await fetch("https://api.quotable.io/random?tags=wisdom");
-                let data = await response.json();
-                document.querySelector('.quote-box').innerText = `"${data.content}" - ${data.author}`;
-            } catch (error) {
-                document.querySelector('.quote-box').innerText = "Unable to fetch wisdom. Try again.";
-            }
-        }
-
-        document.querySelector('.generate-btn').addEventListener('click', fetchWiseSaying);
+        document.querySelector('.generate-btn').addEventListener('click', getRandomAkanSaying);
     </script>
-
 </body>
 </html>
