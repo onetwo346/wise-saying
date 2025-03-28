@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wise Saying</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(45deg, #2c3e50, #000);
+            overflow: hidden;
+        }
+
+        /* Intro Page */
+        .intro {
+            text-align: center;
+            color: white;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .info {
+            margin-top: 10px;
+            font-size: 1.2rem;
+            max-width: 600px;
+            opacity: 0.8;
+        }
+
+        .enter-btn {
+            margin-top: 30px;
+            padding: 15px 30px;
+            font-size: 1.5rem;
+            background: #f39c12;
+            border: none;
+            cursor: pointer;
+            color: black;
+            border-radius: 5px;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        /* Main Page */
+        .main {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            width: 100%;
+            height: 100vh;
+        }
+
+        .quote-box {
+            max-width: 600px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            color: white;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+        }
+
+        .generate-btn {
+            padding: 12px 25px;
+            font-size: 1.2rem;
+            background: #e74c3c;
+            border: none;
+            cursor: pointer;
+            color: white;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+
+        .generate-btn:hover {
+            background: #c0392b;
+        }
+
+        /* 3D Floating Animation */
+        .floating {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Intro Page -->
+    <div class="intro">
+        <h1>Welcome to Wise Saying</h1>
+        <p class="info">Discover ancient Akan wisdom with unlimited quotes. Tap below to enter.</p>
+        <button class="enter-btn">Tap to Enter</button>
+    </div>
+
+    <!-- Main Page -->
+    <div class="main">
+        <h1 class="floating">Wise Saying Generator</h1>
+        <div class="quote-box">Tap the button below to get a wise saying...</div>
+        <button class="generate-btn">Generate Wisdom</button>
+    </div>
+
+    <script>
+        document.querySelector('.enter-btn').addEventListener('click', function() {
+            document.querySelector('.intro').style.display = 'none';
+            document.querySelector('.main').style.display = 'flex';
+        });
+
+        async function fetchWiseSaying() {
+            try {
+                let response = await fetch("https://api.quotable.io/random?tags=wisdom");
+                let data = await response.json();
+                document.querySelector('.quote-box').innerText = `"${data.content}" - ${data.author}`;
+            } catch (error) {
+                document.querySelector('.quote-box').innerText = "Unable to fetch wisdom. Try again.";
+            }
+        }
+
+        document.querySelector('.generate-btn').addEventListener('click', fetchWiseSaying);
+    </script>
+
+</body>
+</html>
