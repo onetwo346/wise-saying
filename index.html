@@ -4,1050 +4,931 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Akan Wisdom Generator</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
         }
 
         body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background: linear-gradient(135deg, #1a1a2e, #16213e, #1a1a2e);
-            overflow-x: hidden;
-            padding: 20px;
-            min-width: 320px;
+            font-family: 'Poppins', sans-serif;
+            background: #000;
+            overflow: hidden;
             perspective: 1000px;
+            height: 100vh;
+            cursor: none;
         }
 
-        .intro {
-            text-align: center;
-            color: white;
+        /* Custom Cursor */
+        .cursor {
             position: fixed;
+            width: 20px;
+            height: 20px;
+            background: radial-gradient(circle, #f39c12, transparent);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transition: transform 0.05s ease;
+            mix-blend-mode: screen;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 20px rgba(243, 156, 18, 0.8);
+        }
+
+        .cursor-follower {
+            position: fixed;
+            width: 40px;
+            height: 40px;
+            border: 2px solid rgba(243, 156, 18, 0.5);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9998;
+            transition: all 0.15s ease;
+            transform: translate(-50%, -50%);
+        }
+
+        .cursor.clicking {
+            transform: translate(-50%, -50%) scale(0.8);
+            background: radial-gradient(circle, #e74c3c, transparent);
+            box-shadow: 0 0 30px rgba(231, 76, 60, 0.8);
+        }
+
+        .cursor-follower.clicking {
+            transform: translate(-50%, -50%) scale(1.2);
+            border-color: rgba(231, 76, 60, 0.8);
+            border-width: 3px;
+        }
+
+        .cursor.hovering {
+            transform: translate(-50%, -50%) scale(1.2);
+            background: radial-gradient(circle, #3498db, transparent);
+            box-shadow: 0 0 25px rgba(52, 152, 219, 0.8);
+        }
+
+        .cursor-follower.hovering {
+            transform: translate(-50%, -50%) scale(1.1);
+            border-color: rgba(52, 152, 219, 0.8);
+        }
+
+        /* Cosmic Background with Enhanced Stars */
+        .cosmic-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at center, #0a0a2e 0%, #000 70%);
+            z-index: -3;
+        }
+
+        .nebula {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(243, 156, 18, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(231, 76, 60, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(155, 89, 182, 0.1) 0%, transparent 50%);
+            z-index: -2;
+            animation: nebula-drift 20s ease-in-out infinite;
+        }
+
+        @keyframes nebula-drift {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(-20px, -10px) scale(1.1); }
+            66% { transform: translate(10px, 20px) scale(0.9); }
+        }
+
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle var(--duration) infinite;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+        }
+
+        .star.special {
+            background: linear-gradient(45deg, #f39c12, #e74c3c);
+            box-shadow: 0 0 20px rgba(243, 156, 18, 0.8);
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        /* Enhanced Floating Particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: linear-gradient(45deg, #f39c12, #e74c3c, #9b59b6);
+            border-radius: 50%;
+            animation: float-particle var(--duration) infinite linear;
+            box-shadow: 0 0 15px rgba(243, 156, 18, 0.6);
+        }
+
+        .particle.energy {
+            background: linear-gradient(45deg, #3498db, #2ecc71);
+            box-shadow: 0 0 20px rgba(52, 152, 219, 0.8);
+        }
+
+        @keyframes float-particle {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
+        }
+
+        /* Enhanced Energy Field */
+        .energy-field {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 400px;
+            height: 400px;
+            border: 2px solid rgba(243, 156, 18, 0.3);
+            border-radius: 50%;
+            z-index: -1;
+            animation: pulse-field 4s ease-in-out infinite;
+        }
+
+        .energy-field::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            border: 1px solid rgba(231, 76, 60, 0.2);
+            border-radius: 50%;
+            animation: pulse-field 4s ease-in-out infinite reverse;
+        }
+
+        .energy-field::after {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: -20px;
+            right: -20px;
+            bottom: -20px;
+            border: 1px solid rgba(155, 89, 182, 0.1);
+            border-radius: 50%;
+            animation: pulse-field 6s ease-in-out infinite;
+        }
+
+        @keyframes pulse-field {
+            0%, 100% { transform: scale(1); opacity: 0.3; }
+            50% { transform: scale(1.2); opacity: 0.6; }
+        }
+
+        /* Mouse Trail Effect */
+        .mouse-trail {
+            position: fixed;
+            width: 6px;
+            height: 6px;
+            background: linear-gradient(45deg, #f39c12, #e74c3c);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9997;
+            animation: trail-fade 1s ease-out forwards;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 10px rgba(243, 156, 18, 0.6);
+        }
+
+        @keyframes trail-fade {
+            0% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            100% { opacity: 0; transform: translate(-50%, -50%) scale(0.1); }
+        }
+
+        /* Enhanced Intro Section */
+        .intro {
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            background: rgba(0, 0, 0, 0.85);
-            z-index: 2;
-            padding: 20px;
-            overflow-y: auto;
-            backdrop-filter: blur(10px);
-            transform-style: preserve-3d;
-            transition: transform 0.5s ease;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(20px);
+            z-index: 1000;
+            transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .intro::before {
+        .intro.fade-out {
+            opacity: 0;
+            transform: scale(1.1) rotateY(10deg);
+            pointer-events: none;
+        }
+
+        .intro h1 {
+            font-family: 'Orbitron', monospace;
+            font-size: clamp(2rem, 6vw, 4rem);
+            font-weight: 900;
+            text-transform: uppercase;
+            background: linear-gradient(45deg, #f39c12, #e74c3c, #9b59b6, #3498db, #2ecc71);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradient-shift 3s ease infinite, glow 2s ease-in-out infinite alternate;
+            text-align: center;
+            margin-bottom: 30px;
+            letter-spacing: 4px;
+            text-shadow: 0 0 30px rgba(243, 156, 18, 0.5);
+            position: relative;
+        }
+
+        .intro h1::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            background: linear-gradient(45deg, #f39c12, #e74c3c, #9b59b6);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradient-shift 3s ease infinite reverse;
+            opacity: 0.3;
+            z-index: -1;
+        }
+
+        @keyframes gradient-shift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        @keyframes glow {
+            0% { filter: drop-shadow(0 0 20px rgba(243, 156, 18, 0.3)); }
+            100% { filter: drop-shadow(0 0 40px rgba(243, 156, 18, 0.8)); }
+        }
+
+        .intro .info {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: clamp(1rem, 2.5vw, 1.3rem);
+            text-align: center;
+            max-width: 600px;
+            line-height: 1.6;
+            margin-bottom: 40px;
+            animation: fade-in-up 1s ease 0.5s both;
+            font-family: 'Rajdhani', sans-serif;
+        }
+
+        @keyframes fade-in-up {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .enter-btn {
+            background: linear-gradient(45deg, #f39c12, #e74c3c);
+            border: none;
+            color: white;
+            padding: 20px 40px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            animation: fade-in-up 1s ease 1s both;
+            box-shadow: 0 10px 30px rgba(243, 156, 18, 0.3);
+            font-family: 'Orbitron', monospace;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .enter-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: 0.5s;
+        }
+
+        .enter-btn:hover::before {
+            left: 100%;
+        }
+
+        .enter-btn:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 20px 40px rgba(243, 156, 18, 0.5);
+        }
+
+        /* Enhanced Main Container */
+        .main {
+            display: none;
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Enhanced Holographic Display */
+        .hologram-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            max-width: 900px;
+            height: 70vh;
+            perspective: 1200px;
+        }
+
+        .hologram {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            animation: hologram-float 8s ease-in-out infinite;
+        }
+
+        @keyframes hologram-float {
+            0%, 100% { transform: translateZ(0) rotateY(0deg) rotateX(0deg); }
+            25% { transform: translateZ(30px) rotateY(3deg) rotateX(1deg); }
+            50% { transform: translateZ(0) rotateY(0deg) rotateX(0deg); }
+            75% { transform: translateZ(-30px) rotateY(-3deg) rotateX(-1deg); }
+        }
+
+        .hologram-panel {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px solid rgba(243, 156, 18, 0.4);
+            border-radius: 25px;
+            backdrop-filter: blur(25px);
+            box-shadow: 
+                0 0 80px rgba(243, 156, 18, 0.2),
+                inset 0 0 80px rgba(255, 255, 255, 0.05),
+                0 20px 40px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .hologram-panel::before {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: radial-gradient(circle at center, rgba(243, 156, 18, 0.1) 0%, transparent 70%);
-            pointer-events: none;
+            background: linear-gradient(45deg, transparent 30%, rgba(243, 156, 18, 0.1) 50%, transparent 70%);
+            animation: hologram-scan 4s linear infinite;
         }
 
-        h1 {
-            font-size: clamp(1.5rem, 4vw, 3rem);
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            margin-bottom: 25px;
-            background: linear-gradient(45deg, #f39c12, #e74c3c, #f39c12);
-            background-size: 200% auto;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-            padding: 0 10px;
-            text-align: center;
-            word-wrap: break-word;
-            animation: gradientFlow 3s ease infinite;
-            transform: translateZ(50px);
-        }
-
-        @keyframes gradientFlow {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        .info {
-            margin: 25px auto;
-            font-size: clamp(0.9rem, 2vw, 1.1rem);
-            max-width: min(700px, 90%);
-            line-height: 1.6;
-            opacity: 0.9;
-            padding: 0 15px;
-            transform: translateZ(30px);
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
-        }
-
-        .enter-btn, .generate-btn {
-            margin-top: 30px;
-            padding: clamp(12px, 2.5vw, 15px) clamp(30px, 5vw, 40px);
-            font-size: clamp(0.9rem, 2vw, 1.1rem);
-            background: linear-gradient(45deg, #f39c12, #e74c3c);
-            border: none;
-            cursor: pointer;
-            color: white;
-            border-radius: 40px;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 8px 25px rgba(243, 156, 18, 0.3);
-            width: fit-content;
-            min-width: 200px;
-            max-width: 90%;
-            transform: translateZ(40px);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .enter-btn::before, .generate-btn::before {
+        .hologram-panel::after {
             content: '';
             position: absolute;
             top: 0;
-            left: -100%;
-            width: 100%;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 50% 50%, transparent 0%, rgba(243, 156, 18, 0.05) 50%, transparent 100%);
+            animation: hologram-pulse 6s ease-in-out infinite;
+        }
+
+        @keyframes hologram-scan {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        @keyframes hologram-pulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.6; }
+        }
+
+        .hologram-content {
+            position: relative;
+            z-index: 2;
+            padding: 50px;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: 0.5s;
-        }
-
-        .enter-btn:hover::before, .generate-btn:hover::before {
-            left: 100%;
-        }
-
-        .enter-btn:hover, .generate-btn:hover {
-            transform: translateZ(40px) scale(1.05);
-            box-shadow: 0 12px 30px rgba(243, 156, 18, 0.4);
-        }
-
-        .main {
-            display: none;
+            display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             text-align: center;
-            width: 100%;
-            max-width: min(1000px, 95%);
-            margin: 0 auto;
-            padding: clamp(20px, 5vw, 40px) clamp(10px, 3vw, 20px);
-            transform-style: preserve-3d;
-        }
-
-        .quote-container {
-            width: 100%;
-            background: rgba(255, 255, 255, 0.1);
-            padding: clamp(20px, 4vw, 35px);
-            border-radius: clamp(12px, 2vw, 20px);
             color: white;
-            margin: clamp(15px, 3vw, 25px) 0;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transform: translateZ(20px);
-            transition: transform 0.3s ease;
         }
 
-        .quote-container:hover {
-            transform: translateZ(30px);
+        .quote-display {
+            font-size: clamp(1.5rem, 4vw, 2.5rem);
+            line-height: 1.4;
+            margin-bottom: 30px;
+            text-shadow: 0 0 20px rgba(243, 156, 18, 0.5);
+            animation: text-glow 2s ease-in-out infinite alternate;
         }
 
-        .quote-content {
-            font-size: clamp(1rem, 2.5vw, 1.8rem);
-            margin-bottom: clamp(15px, 3vw, 25px);
-            line-height: 1.5;
-            word-wrap: break-word;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        @keyframes text-glow {
+            0% { text-shadow: 0 0 20px rgba(243, 156, 18, 0.5); }
+            100% { text-shadow: 0 0 40px rgba(243, 156, 18, 0.8); }
         }
 
-        .quote-content strong {
+        .quote-akan {
+            font-family: 'Orbitron', monospace;
+            font-weight: 700;
             color: #f39c12;
-            font-size: clamp(1.2rem, 3vw, 2rem);
-            display: block;
-            margin-bottom: clamp(10px, 2vw, 15px);
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.4);
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 0 15px rgba(243, 156, 18, 0.8);
         }
 
-        .quote-details {
-            font-size: clamp(0.85rem, 2vw, 1.1rem);
-            opacity: 0.95;
-            line-height: 1.6;
-            word-wrap: break-word;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        .quote-english {
+            font-style: italic;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 30px;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.1em;
         }
 
-        .quote-details p {
-            margin: 12px 0;
+        .quote-lesson {
+            font-size: clamp(1rem, 2.5vw, 1.3rem);
+            color: #e74c3c;
+            font-weight: 500;
+            margin-bottom: 20px;
+            font-family: 'Rajdhani', sans-serif;
         }
 
-        .quote-details em {
-            color: #f39c12;
-            font-style: normal;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        .quote-author {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+            font-style: italic;
+            font-family: 'Orbitron', monospace;
         }
 
-        .floating {
-            animation: float 4s ease-in-out infinite;
-            transform: translateZ(50px);
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateZ(50px) translateY(0); }
-            50% { transform: translateZ(50px) translateY(-15px); }
-        }
-
-        .button-container {
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-            justify-content: center;
-            align-items: center;
-            margin-top: 30px;
-            transform: translateZ(30px);
-        }
-
-        .pause-btn {
-            padding: clamp(12px, 2.5vw, 15px) clamp(30px, 5vw, 40px);
-            font-size: clamp(0.9rem, 2vw, 1.1rem);
-            background: linear-gradient(45deg, #2ecc71, #27ae60);
-            border: none;
-            cursor: pointer;
-            color: white;
-            border-radius: 40px;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 8px 25px rgba(46, 204, 113, 0.3);
-            width: fit-content;
-            min-width: 200px;
-            max-width: 90%;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .pause-btn::before {
-            content: '';
+        /* Enhanced Control Panel */
+        .control-panel {
             position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: 0.5s;
-        }
-
-        .pause-btn:hover::before {
-            left: 100%;
-        }
-
-        .pause-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 12px 30px rgba(46, 204, 113, 0.4);
-        }
-
-        .pause-btn.paused {
-            background: linear-gradient(45deg, #f1c40f, #f39c12);
-            box-shadow: 0 8px 25px rgba(241, 196, 15, 0.3);
-        }
-
-        .pause-btn.paused:hover {
-            box-shadow: 0 12px 30px rgba(241, 196, 15, 0.4);
-        }
-
-        .share-btn {
-            padding: clamp(12px, 2.5vw, 15px) clamp(30px, 5vw, 40px);
-            font-size: clamp(0.9rem, 2vw, 1.1rem);
-            background: linear-gradient(45deg, #3498db, #2980b9);
-            border: none;
-            cursor: pointer;
-            color: white;
-            border-radius: 40px;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 8px 25px rgba(52, 152, 219, 0.3);
-            width: fit-content;
-            min-width: 200px;
-            max-width: 90%;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .share-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: 0.5s;
-        }
-
-        .share-btn:hover::before {
-            left: 100%;
-        }
-
-        .share-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 12px 30px rgba(52, 152, 219, 0.4);
-        }
-
-        .share-btn.copied {
-            background: linear-gradient(45deg, #2ecc71, #27ae60);
-            box-shadow: 0 8px 25px rgba(46, 204, 113, 0.3);
-        }
-
-        .share-btn.copied:hover {
-            box-shadow: 0 12px 30px rgba(46, 204, 113, 0.4);
-        }
-
-        .share-toast {
-            position: fixed;
-            bottom: 20px;
+            bottom: 50px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(46, 204, 113, 0.9);
+            display: flex;
+            gap: 25px;
+            z-index: 10;
+        }
+
+        .control-btn {
+            background: linear-gradient(45deg, #2c3e50, #34495e);
+            border: 2px solid rgba(243, 156, 18, 0.4);
             color: white;
-            padding: 12px 24px;
-            border-radius: 25px;
-            font-size: 0.9rem;
+            padding: 18px 35px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(15px);
+            font-family: 'Orbitron', monospace;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .control-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(243, 156, 18, 0.3), transparent);
+            transition: 0.5s;
+        }
+
+        .control-btn:hover::before {
+            left: 100%;
+        }
+
+        .control-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(243, 156, 18, 0.4);
+            border-color: #f39c12;
+        }
+
+        .control-btn.active {
+            background: linear-gradient(45deg, #f39c12, #e74c3c);
+            border-color: #f39c12;
+            box-shadow: 0 15px 35px rgba(243, 156, 18, 0.5);
+        }
+
+        /* Enhanced Data Stream Effect */
+        .data-stream {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .data-line {
+            position: absolute;
+            width: 2px;
+            height: 120px;
+            background: linear-gradient(to bottom, transparent, #f39c12, #e74c3c, transparent);
+            animation: data-fall var(--duration) linear infinite;
+            box-shadow: 0 0 10px rgba(243, 156, 18, 0.5);
+        }
+
+        @keyframes data-fall {
+            0% { transform: translateY(-120px); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(100vh); opacity: 0; }
+        }
+
+        /* Enhanced Quantum Particles */
+        .quantum-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .quantum-particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #f39c12;
+            border-radius: 50%;
+            animation: quantum-move var(--duration) ease-in-out infinite;
+            box-shadow: 0 0 15px rgba(243, 156, 18, 0.8);
+        }
+
+        .quantum-particle.blue {
+            background: #3498db;
+            box-shadow: 0 0 15px rgba(52, 152, 219, 0.8);
+        }
+
+        .quantum-particle.green {
+            background: #2ecc71;
+            box-shadow: 0 0 15px rgba(46, 204, 113, 0.8);
+        }
+
+        @keyframes quantum-move {
+            0%, 100% { 
+                transform: translate(var(--x), var(--y)) scale(1);
+                opacity: 0.3;
+            }
+            50% { 
+                transform: translate(calc(var(--x) + 80px), calc(var(--y) - 80px)) scale(1.8);
+                opacity: 1;
+            }
+        }
+
+        /* Enhanced Loading Animation */
+        .loading {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2000;
+            display: none;
+        }
+
+        .loading-spinner {
+            width: 80px;
+            height: 80px;
+            border: 4px solid rgba(243, 156, 18, 0.2);
+            border-top: 4px solid #f39c12;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            box-shadow: 0 0 30px rgba(243, 156, 18, 0.3);
+        }
+
+        .loading-spinner::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: -8px;
+            right: -8px;
+            bottom: -8px;
+            border: 2px solid rgba(231, 76, 60, 0.2);
+            border-top: 2px solid #e74c3c;
+            border-radius: 50%;
+            animation: spin 1.5s linear infinite reverse;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Enhanced Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(45deg, rgba(46, 204, 113, 0.9), rgba(39, 174, 96, 0.9));
+            color: white;
+            padding: 20px 40px;
+            border-radius: 30px;
+            font-size: 1.1rem;
             opacity: 0;
-            transition: opacity 0.3s ease;
+            transition: all 0.4s ease;
             z-index: 1000;
-            backdrop-filter: blur(5px);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(15px);
+            box-shadow: 0 10px 30px rgba(46, 204, 113, 0.3);
+            font-family: 'Orbitron', monospace;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        .share-toast.show {
+        .toast.show {
             opacity: 1;
+            transform: translateX(-50%) translateY(-10px);
         }
 
-        /* Extra Small Devices (Phones) */
-        @media screen and (max-width: 480px) {
-            body {
-                padding: 10px;
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hologram-container {
+                width: 95%;
+                height: 60vh;
             }
 
-            .quote-container {
-                padding: 15px;
+            .hologram-content {
+                padding: 30px 20px;
             }
 
-            .enter-btn, .generate-btn, .pause-btn, .share-btn {
-                padding: 10px 25px;
-                min-width: 160px;
+            .control-panel {
+                flex-direction: column;
+                gap: 15px;
+                bottom: 30px;
+            }
+
+            .control-btn {
+                padding: 15px 30px;
                 font-size: 0.9rem;
             }
-            
-            .button-container {
-                gap: 12px;
-            }
 
-            h1 {
-                font-size: 1.5rem;
+            .energy-field {
+                width: 300px;
+                height: 300px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .intro h1 {
+                font-size: 2rem;
                 letter-spacing: 2px;
             }
 
-            .info {
-                font-size: 0.9rem;
-                line-height: 1.5;
+            .intro .info {
+                font-size: 1rem;
             }
 
-            .share-toast {
-                bottom: 15px;
-                padding: 10px 20px;
-                font-size: 0.85rem;
+            .enter-btn {
+                padding: 15px 30px;
+                font-size: 1rem;
             }
-        }
 
-        /* Small Devices (Large Phones and Small Tablets) */
-        @media screen and (min-width: 481px) and (max-width: 768px) {
-            .quote-container {
-                padding: 25px;
-            }
-            
-            .main {
+            .hologram-content {
                 padding: 20px 15px;
             }
 
-            h1 {
-                font-size: 2rem;
-            }
-
-            .info {
-                font-size: 1rem;
+            .control-panel {
+                bottom: 20px;
             }
         }
 
-        /* Medium Devices (Tablets and Small Laptops) */
-        @media screen and (min-width: 769px) and (max-width: 1024px) {
-            .quote-container {
-                padding: 30px;
-            }
-
-            h1 {
-                font-size: 2.5rem;
-            }
+        /* Hide cursor on interactive elements */
+        button, .hologram-container {
+            cursor: none;
         }
 
-        /* Large Devices (Desktops) */
-        @media screen and (min-width: 1025px) {
-            .quote-container {
-                padding: 35px;
-            }
-
-            h1 {
-                font-size: 3rem;
-            }
-        }
-
-        /* Handle very tall screens */
-        @media screen and (min-height: 1000px) {
-            .main {
-                margin-top: clamp(20px, 4vh, 40px);
-            }
-        }
-
-        /* Handle landscape orientation on mobile */
-        @media screen and (max-height: 500px) and (orientation: landscape) {
-            .intro {
-                position: absolute;
-                height: auto;
-                min-height: 100%;
-            }
-            
-            .main {
-                margin: 20px auto;
-            }
-            
-            h1 {
-                font-size: 1.8rem;
-            }
-
-            .info {
-                font-size: 0.9rem;
-            }
-        }
-
-        /* Ensure text remains readable on very small screens */
-        @media screen and (max-width: 320px) {
-            .quote-content {
-                font-size: 0.9rem;
-            }
-            
-            .quote-content strong {
-                font-size: 1.1rem;
-            }
-            
-            .quote-details {
-                font-size: 0.85rem;
-            }
-
-            h1 {
-                font-size: 1.3rem;
-            }
-
-            .info {
-                font-size: 0.85rem;
-            }
+        /* Performance optimizations */
+        .particle, .star, .quantum-particle {
+            will-change: transform, opacity;
         }
     </style>
 </head>
 <body>
+    <!-- Custom Cursor -->
+    <div class="cursor"></div>
+    <div class="cursor-follower"></div>
+
+    <!-- Cosmic Background -->
+    <div class="cosmic-bg"></div>
+    <div class="nebula"></div>
+    <div class="stars"></div>
+    <div class="particles"></div>
+    <div class="energy-field"></div>
+    <div class="quantum-particles"></div>
+
+    <!-- Intro Section -->
     <div class="intro">
-        <h1>Akan Wisdom Journey</h1>
-        <p class="info">Embark on a transformative journey through the timeless wisdom of the Akan people. Each proverb carries profound life lessons that have guided generations. Discover the depth of African wisdom, one saying at a time.</p>
-        <button class="enter-btn" role="button" tabindex="0">Begin Wisdom Quest</button>
+        <h1>AKAN WISDOM MATRIX</h1>
+        <p class="info">Enter the quantum realm of ancient African wisdom. Experience the fusion of traditional Akan proverbs with cutting-edge holographic technology. Each proverb is a gateway to profound understanding.</p>
+        <button class="enter-btn">INITIALIZE MATRIX</button>
     </div>
 
+    <!-- Main Interface -->
     <div class="main">
-        <h1 class="floating">Akan Wisdom Generator</h1>
-        <div class="quote-container">
-            <div class="quote-content">Tap "Generate Wisdom" below to begin your journey...</div>
-            <div class="quote-details"></div>
+        <div class="hologram-container">
+            <div class="hologram">
+                <div class="hologram-panel">
+                    <div class="data-stream"></div>
+                    <div class="hologram-content">
+                        <div class="quote-display">
+                            <div class="quote-akan">TAP "GENERATE" TO BEGIN</div>
+                            <div class="quote-english">Awaiting wisdom input...</div>
+                            <div class="quote-lesson">Prepare to receive ancient knowledge</div>
+                            <div class="quote-author">- Akan Quantum Matrix</div>
         </div>
-        <div class="button-container">
-            <button class="generate-btn" role="button" tabindex="0">Generate Wisdom</button>
-            <button class="pause-btn" role="button" tabindex="0">Pause Auto-Update</button>
-            <button class="share-btn" role="button" tabindex="0">Share Wisdom</button>
         </div>
     </div>
-    <div class="share-toast">Quote copied to clipboard!</div>
+            </div>
+        </div>
+
+        <div class="control-panel">
+            <button class="control-btn generate-btn">GENERATE WISDOM</button>
+            <button class="control-btn pause-btn">PAUSE MATRIX</button>
+            <button class="control-btn share-btn">SHARE QUANTUM</button>
+        </div>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div class="loading">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast">Wisdom transmitted to clipboard!</div>
 
     <script>
+        // Enhanced Akan Wisdom Database
         const akanSayings = [
             {
                 akan: "Obi nnim a, obi kyere",
                 english: "If someone doesn't know, another person teaches them",
                 lesson: "Knowledge is shared; no one knows everything. Humility and willingness to learn are key to personal growth.",
-                author: "Akan Proverb"
+                author: "Akan Quantum Proverb"
             },
             {
                 akan: "Sɛ wo wu a, na wo te ase",
                 english: "If you die, you are still alive",
                 lesson: "Listen and take advice while you're alive. Wisdom comes from listening to others, not from stubbornness.",
-                author: "Akan Wisdom"
+                author: "Akan Matrix Wisdom"
             },
             {
                 akan: "Nsɛnkyerɛne da mu a, ɛda mu da",
                 english: "When the fool lies in wait, he will be caught",
                 lesson: "Deceit and trickery will eventually be exposed. Honesty and integrity are more powerful than cunning.",
-                author: "Akan Teaching"
+                author: "Akan Holographic Teaching"
             },
             {
                 akan: "Aboa bi bɛka a, na ɛnka ne ho",
                 english: "When an animal is about to speak, it does not speak about itself",
                 lesson: "True wisdom involves understanding others and being objective, not always talking about oneself.",
-                author: "Akan Proverb"
+                author: "Akan Quantum Proverb"
             },
             {
                 akan: "Tí wɔ dua mu a, wɔ dua mu",
                 english: "If you are in a tree, you are in a tree",
                 lesson: "Accept and adapt to your current circumstances. Sometimes you must work with what you have.",
-                author: "Akan Wisdom"
+                author: "Akan Matrix Wisdom"
             },
             {
                 akan: "Sɛ wopɛ sɛ wo yɛ adwuma a, fa wo ho",
                 english: "If you want to do work, take yourself",
                 lesson: "Success comes from personal effort and dedication. You must take initiative and responsibility for your actions.",
-                author: "Akan Teaching"
+                author: "Akan Holographic Teaching"
             },
             {
                 akan: "Aboa bi nni a, na ɛnni ne ho",
                 english: "When an animal is not there, it is not there for itself",
                 lesson: "Sometimes absence speaks louder than presence. The impact of someone's absence can reveal their true importance.",
-                author: "Akan Proverb"
+                author: "Akan Quantum Proverb"
             },
             {
                 akan: "Sɛ wo yɛ adwuma a, yɛ adwuma",
                 english: "If you are doing work, do work",
                 lesson: "When you commit to a task, give it your full attention and effort. Half-hearted attempts lead to mediocre results.",
-                author: "Akan Wisdom"
-            },
-            {
-                akan: "Aboa bi bɛka a, na ɛnka ne ho",
-                english: "When an animal is about to speak, it does not speak about itself",
-                lesson: "True wisdom involves understanding others and being objective, not always talking about oneself.",
-                author: "Akan Teaching"
-            },
-            {
-                akan: "Sɛ wo wu a, na wo te ase",
-                english: "If you die, then you listen from below",
-                lesson: "Listen and take advice while you're alive. Wisdom comes from listening to others, not from stubbornness.",
-                author: "Akan Proverb"
-            },
-            {
-                akan: "Sɛ wo yɛ adwuma a, yɛ adwuma",
-                english: "If you are doing work, do work",
-                lesson: "When you commit to a task, give it your full attention and effort. Half-hearted attempts lead to mediocre results.",
-                author: "Akan Wisdom"
-            },
-            {
-                akan: "Aboa bi nni a, na ɛnni ne ho",
-                english: "When an animal is not there, it is not there for itself",
-                lesson: "Sometimes absence speaks louder than presence. The impact of someone's absence can reveal their true importance.",
-                author: "Akan Proverb"
-            },
-            {
-                akan: "Sɛ wopɛ sɛ wo yɛ adwuma a, fa wo ho",
-                english: "If you want to do work, take yourself",
-                lesson: "Success comes from personal effort and dedication. You must take initiative and responsibility for your actions.",
-                author: "Akan Teaching"
-            },
-            {
-                akan: "Tí wɔ dua mu a, wɔ dua mu",
-                english: "If you are in a tree, you are in a tree",
-                lesson: "Accept and adapt to your current circumstances. Sometimes you must work with what you have.",
-                author: "Akan Wisdom"
-            },
-            {
-                akan: "Nsɛnkyerɛne da mu a, ɛda mu da",
-                english: "When the fool lies in wait, he will be caught",
-                lesson: "Deceit and trickery will eventually be exposed. Honesty and integrity are more powerful than cunning.",
-                author: "Akan Teaching"
+                author: "Akan Matrix Wisdom"
             },
             {
                 akan: "Sika yɔ nipa firi nsɛm hunu",
                 english: "Money makes a person ignore nonsense",
                 lesson: "When you have wealth, you don't entertain foolishness. Financial independence can help you avoid unnecessary drama.",
-                author: "Akan Wisdom"
+                author: "Akan Holographic Teaching"
             },
             {
                 akan: "Wode wo nsa na ɛka wo bo",
                 english: "You are the one who touches your own stone",
                 lesson: "Your actions bring consequences upon you. Take responsibility for your choices and their outcomes.",
-                author: "Akan Teaching"
+                author: "Akan Quantum Proverb"
             },
             {
                 akan: "Nyansa yɛ sika, na ahoɔyaw yɛ ahaban",
                 english: "Wisdom is gold, and shame is a leaf",
                 lesson: "Wisdom is valuable and lasting, while shame is temporary. Invest in gaining wisdom rather than avoiding temporary discomfort.",
-                author: "Akan Proverb"
+                author: "Akan Matrix Wisdom"
             },
             {
                 akan: "Wo nsa nsa ho a, ɛnyɛ na wotumi siesie wo ho",
                 english: "If you don't touch water, you cannot clean yourself",
                 lesson: "Effort is required for self-improvement. You must take action to create positive change in your life.",
-                author: "Akan Wisdom"
+                author: "Akan Holographic Teaching"
             },
             {
                 akan: "Obi ntumi nkyerɛ akokɔ ɔkwan",
                 english: "No one teaches a hen how to scratch the ground",
                 lesson: "Some instincts are natural. Trust your innate abilities and intuition.",
-                author: "Akan Teaching"
+                author: "Akan Quantum Proverb"
             },
             {
                 akan: "Onipa ho yɛ na sɛn?",
                 english: "What is more important than a human being?",
                 lesson: "People matter more than material things. Value relationships and human dignity above material possessions.",
-                author: "Akan Proverb"
+                author: "Akan Matrix Wisdom"
             },
             {
                 akan: "Nea ɔpɛ apɔnkɔ na ɔbɔ ne so ataadeɛ",
                 english: "The one who loves horses will clothe them",
                 lesson: "People invest in what they love. Your actions reveal your true priorities and passions.",
-                author: "Akan Wisdom"
+                author: "Akan Holographic Teaching"
             },
             {
                 akan: "Mframa a ɛbɛba no, ɛkɔmfo deɛ ɔnte",
                 english: "The wind that will come, the diviner does not know",
                 lesson: "No one can predict the future completely. Stay humble and prepared for life's uncertainties.",
-                author: "Akan Teaching"
+                author: "Akan Quantum Proverb"
             },
             {
                 akan: "Wo pɛ sɛ wo nya ade a, ɛsɛ sɛ woyɛ adwuma",
                 english: "If you want something, you must work for it",
                 lesson: "Success requires effort. Nothing worthwhile comes without dedication and hard work.",
-                author: "Akan Proverb"
+                author: "Akan Matrix Wisdom"
             },
             {
                 akan: "Wo werɛ ho a, wo bɛhunu",
                 english: "If you forget, you will experience",
                 lesson: "Experience is the best teacher. Learn from your mistakes or be doomed to repeat them.",
-                author: "Akan Wisdom"
+                author: "Akan Holographic Teaching"
             },
             {
                 akan: "Se wo bɛyɛ sɛ dua a wɔatwitwa no a, wo ntumi nsõ",
                 english: "If you act like a cut tree, you cannot grow",
                 lesson: "Don't let setbacks keep you down. Resilience is key to personal growth and success.",
-                author: "Akan Teaching"
+                author: "Akan Quantum Proverb"
             },
             {
                 akan: "Wopɛ sɛ abɛ nyini na ɛyɛ kɛse a, wobetwa ho ntwirim",
                 english: "If you want a palm tree to grow tall, you must trim its leaves",
                 lesson: "Growth sometimes requires sacrifices. To achieve greatness, you must be willing to let go of what holds you back.",
-                author: "Akan Proverb"
+                author: "Akan Matrix Wisdom"
             },
             {
                 akan: "Nimdeɛ yɛ mogya, na nyansa yɛ nkwa",
                 english: "Knowledge is blood, and wisdom is life",
                 lesson: "Wisdom is essential for survival. While knowledge is important, wisdom is what truly sustains us.",
-                author: "Akan Wisdom"
-            },
-            {
-                akan: "Wo bɛyɛ ɔba pa a, wofiri ase pa",
-                english: "To become a good child, you must start well",
-                lesson: "A good beginning leads to a good end. Strong foundations are essential for lasting success.",
-                author: "Akan Teaching"
-            },
-            {
-                akan: "Asetra yɛ nsuo a ɛsen fa",
-                english: "Life is like water—it keeps flowing",
-                lesson: "Change is constant. Adapt to life's changes and keep moving forward.",
-                author: "Akan Proverb"
-            },
-            {
-                akan: "Aboa a ne ho yɛ hare no, na ɔkyerɛ ne kwatibea",
-                english: "An animal that moves fast shows its hiding place",
-                lesson: "Being hasty can expose your weaknesses. Take time to think and act with purpose.",
-                author: "Akan Wisdom"
-            },
-            {
-                akan: "Sɛnea anomaa bɔ ne to gu hɔ no, na ɔbɛsɔre",
-                english: "The way a bird falls is the way it will rise",
-                lesson: "Your recovery depends on how you fall. How you handle setbacks determines your comeback.",
-                author: "Akan Teaching"
-            },
-            {
-                akan: "Onipa yɛ kɔtɔ, ɔbɛsi ne fɛre",
-                english: "A person is like a crab; they will land on their shell",
-                lesson: "You always return to your true nature. Stay authentic to who you are.",
-                author: "Akan Proverb"
-            },
-            {
-                akan: "Deɛ ɔtwɛn kɔtɔ no, ɔnya ne nan ase",
-                english: "The one who waits for the crab gets it under his feet",
-                lesson: "Patience brings rewards. Good things come to those who wait and persist.",
-                author: "Akan Wisdom"
-            },
-            {
-                akan: "Nsuo a ɛtoa fɔm no, ɛfi nsuo mu",
-                english: "The water that falls as rain comes from the sky",
-                lesson: "Everything has a source. Understand and respect the origins of things.",
-                author: "Akan Teaching"
-            },
-            {
-                akan: "Aboa a ɔde ne ho bɔ nsuo no, ɔnnsuro ɔbosom",
-                english: "The animal that bathes itself in the river does not fear the deity (god) of the river",
-                lesson: "When you are prepared and confident, you don't fear challenges.",
-                author: "Akan Proverb"
-            },
-            {
-                akan: "Obi nkyerɛ abofra Nyame ho",
-                english: "No one teaches a child about God",
-                lesson: "Some knowledge, like faith and morality, is natural and instinctive.",
-                author: "Akan Wisdom"
-            },
-            {
-                akan: "Wo so me a, me nso wo",
-                english: "If you carry me, I will also carry you",
-                lesson: "Support and love should be mutual in life.",
-                author: "Akan Teaching"
-            },
-            {
-                akan: "Ɔbrɛ no de aboa na ɛde onipa",
-                english: "Suffering is for both animals and humans alike",
-                lesson: "Hardships in life affect everyone, no matter their status.",
-                author: "Akan Proverb"
-            },
-            {
-                akan: "Nsuo a ɛbɔ pɛyɛ no, ɔwɔ beae na ɛfiri",
-                english: "The gentle rainfall has its source",
-                lesson: "Every action has an origin, and nothing happens by chance.",
-                author: "Akan Wisdom"
-            },
-            {
-                akan: "Kwaku ntumi nware ne yɔnko yere",
-                english: "Kwaku cannot marry his friend's wife",
-                lesson: "Some things in life are meant for specific people, and not everything is available to everyone.",
-                author: "Akan Teaching"
-            },
-            {
-                akan: "Nsuo a ɛto nanso ɛnnome, ɛbɛyɛ dɛn anya apɔnkɔ dodo?",
-                english: "If the rain falls but does not wet the ground, how will the horse get enough water to drink?",
-                lesson: "If a system is not working properly, those who depend on it will suffer.",
-                author: "Akan Proverb"
-            },
-            {
-                akan: "Sɛ wo ho yɛ fi a, nsuo na ɛbɛdɔ wo",
-                english: "If you are dirty, it is water that will clean you",
-                lesson: "When facing challenges, look for the right solution instead of avoiding them.",
-                author: "Akan Wisdom"
-            },
-            {
-                akan: "Ɔbarima a ɔnnsuro ɔtadeɛ no, ɔnnsuro nsuo",
-                english: "A man who does not fear nakedness does not fear water",
-                lesson: "If you have already exposed yourself to risk, you should not be afraid of the consequences.",
-                author: "Akan Teaching"
-            },
-            {
-                akan: "Wo se tɛkyerɛma nanso ɔhunu baako a ɔtwetwe mu",
-                english: "Your tongue is soft, yet when it sees a bone, it pulls away",
-                lesson: "Even the weak know their limits and when to step back from danger.",
-                author: "Akan Proverb"
-            },
-            {
-                akan: "Nyansa bɛyɛ wo de a, bɔ wo ho ban fi nsem kɛse ho",
-                english: "If you want to be wise, protect yourself from unnecessary talk",
-                lesson: "Avoid gossip and idle talk to maintain your reputation and wisdom.",
-                author: "Akan Wisdom"
-            },
-            {
-                akan: "Ɔbɛtumi asie wo ntoma, nanso ɔntumi nsie wo ho",
-                english: "Someone can hide your cloth, but they cannot hide your body",
-                lesson: "The truth will always come out no matter how much it is hidden.",
-                author: "Akan Teaching"
-            },
-            {
-                akan: "W'ano na ɛde wo bɛtɔ asram",
-                english: "Your mouth is what will sell you to the moon (expose you)",
-                lesson: "Be careful with your words; they can reveal your secrets.",
-                author: "Akan Proverb"
-            },
-            {
-                akan: "Ɔdeɛfoɔ de ne nan nsa na ɔde ne ho yɛ sika",
-                english: "A hardworking person uses their hands and feet to create wealth",
-                lesson: "Success comes through effort and not laziness.",
-                author: "Akan Wisdom"
-            },
-            {
-                akan: "Sɛ wokyɛ abɔdeɛ na ɛmmɔ wo a, na ɔbɛkyɛ wo da bɛn?",
-                english: "If you lend someone an umbrella and it does not rain on them, when will they return it?",
-                lesson: "People often forget favors when they don't experience hardship.",
-                author: "Akan Teaching"
-            },
-            {
-                akan: "Sɛ wo gye w'abusua ho a, w'ase yɛ den",
-                english: "If you rely only on your family, your foundation is weak",
-                lesson: "Don't depend only on family; build independent support systems.",
-                author: "Akan Proverb"
-            },
-            {
-                akan: "Sɛ nsuo to a, nanka mpo gyae hyɛ",
-                english: "When the rain falls, even the firefly stops shining",
-                lesson: "No matter how powerful you are, nature and circumstances can humble you.",
-                author: "Akan Wisdom"
-            },
-            {
-                akan: "Abɔfra bɛsi ne nan, na ɔnnim sika bo",
-                english: "A child only sees his feet but does not know the value of money",
-                lesson: "Youth often do not appreciate the value of things until they grow older.",
-                author: "Akan Teaching"
-            },
-            {
-                akan: "Sika yɛ fɛ, na hwan na ɔbɛtumi adi akyɛdeɛ ho fɛ?",
-                english: "Gold is beautiful, but who can eat its beauty?",
-                lesson: "Material things are nice, but they are not the most important in life.",
-                author: "Akan Proverb"
-            },
-            {
-                akan: "Sɛ wokum aboa a, n'akyiri nsɛe",
-                english: "If you kill an animal, its tail does not spoil",
-                lesson: "Even after someone is gone, their legacy remains.",
-                author: "Akan Wisdom"
-            },
-            {
-                akan: "Wo ho tɔ wo a, wɔmmɛtow wo gya",
-                english: "If you are inflammable, no one will throw you into the fire",
-                lesson: "If you show that you are fragile or vulnerable, people will be careful with you.",
-                author: "Akan Teaching"
-            },
-            {
-                akan: "Ɔhene ani te se nsuo; wubɔ ho hu a, na woahu ne dɔ",
-                english: "A king's eye is like water; you only know its depth when you step into it",
-                lesson: "Never underestimate a leader's wisdom until you experience it.",
-                author: "Akan Proverb"
-            },
-            {
-                akan: "Sɛ anomaa de n'ase n'ani so a, ɔbɛhunu ɔsoro ho",
-                english: "If a bird turns its face upwards, it will see the sky",
-                lesson: "If you change your perspective, you will discover new possibilities.",
-                author: "Akan Wisdom"
-            },
-            {
-                akan: "Nsuo a ɛde wo nkɔ asu no na ɛbɛgye wo firi hɔ",
-                english: "The water that carries you into the river is the same that will carry you out",
-                lesson: "The solution to your problem often lies within the problem itself.",
-                author: "Akan Teaching"
-            },
-            {
-                akan: "Sɛ wokɔn papa a, ɛnyɛ wo ho nko, na ɛyɛ wo mogya",
-                english: "If you are cursed, it is not just you but your bloodline that suffers",
-                lesson: "Your actions can affect your family and future generations.",
-                author: "Akan Proverb"
-            },
-            {
-                akan: "Nyansa na ɛyɛ aboa; sɛ wunya a, woyɛ onipa",
-                english: "Wisdom is what makes an animal different; if you gain it, you become human",
-                lesson: "Intelligence and wisdom elevate a person above others.",
-                author: "Akan Wisdom"
-            },
-            {
-                akan: "Afe biara ɛyɛ fɔ, nanso ɛnyɛ obiara na ɛyɛ no fɔ",
-                english: "Every year is good, but not for everyone",
-                lesson: "Life's fortunes are not distributed equally; some succeed while others struggle.",
-                author: "Akan Teaching"
-            },
-            {
-                akan: "Obi mma me nkwan a, menka n'ano ho dɛ",
-                english: "If someone does not give me soup, I won't bother with their pot's scent",
-                lesson: "Don't waste time on things that don't benefit you.",
-                author: "Akan Proverb"
-            },
-            {
-                akan: "W'ase hye a, na w'ankasa wo bɔ bra",
-                english: "If your roots are on fire, don't waste time braiding your hair",
-                lesson: "Focus on solving your biggest problems before worrying about minor ones.",
-                author: "Akan Wisdom"
-            },
-            {
-                akan: "Abofra te se bɔdeɛ; sɛ ɔmpam a, ɔnto",
-                english: "A child is like a plantain tree; if it does not shed its old leaves, it will not bear fruit",
-                lesson: "Growth requires letting go of the past.",
-                author: "Akan Teaching"
-            },
-            {
-                akan: "Sɛ woyɛ nkɔsoɔ a, fa wo nan soro na w'ano ase",
-                english: "If you want progress, lift your feet but lower your mouth",
-                lesson: "Speak less and act more if you want to succeed.",
-                author: "Akan Proverb"
-            },
-            {
-                akan: "Wo de wo ho kɔ yɛn a, ɛbɛyɛ sɛ nsuo a ɛkɔ fam",
-                english: "If you humble yourself too much, you will be like water that always flows downhill",
-                lesson: "Humility is good, but too much of it makes people take advantage of you.",
-                author: "Akan Wisdom"
-            },
-            {
-                akan: "Sɛ nkyene de nkuto ne nkatɛ pa, na ɛnsesa no, ɛbɛyɛ dɛn?",
-                english: "If salt is given oil and groundnut paste but still remains the same, what can change it?",
-                lesson: "Some people never change, no matter how much you help them.",
-                author: "Akan Teaching"
-            },
-            {
-                akan: "Ɔdɔ te sɛ nkosua; sɛ woyɛ kɔm a, ɛbɛyɛ dɛn?",
-                english: "Love is like an egg; if you squeeze it too hard, what happens?",
-                lesson: "Love must be handled with care, or it will break.",
-                author: "Akan Proverb"
-            },
-            {
-                akan: "Ɔkwan a ɔbɛma wo apɔ so no, fa no yie",
-                english: "The road that will take you to the top, walk it carefully",
-                lesson: "Success requires patience and careful steps.",
-                author: "Akan Wisdom"
-            },
-            {
-                akan: "Abɔfra hunu sɛ nsuo ayɛ basaa a, ɔmmɛto mu",
-                english: "A child who sees the river muddy will not jump into it",
-                lesson: "Experience teaches people to be cautious.",
-                author: "Akan Teaching"
-            },
-            {
-                akan: "Aba a ɛbɔ wo da so no, ɛnyɛ wo ara na ɛbɛka",
-                english: "A seed that falls on you does not only stick to you",
-                lesson: "The consequences of your actions affect more than just yourself.",
-                author: "Akan Proverb"
-            },
-            {
-                akan: "Sɛ woyera wo ba a, hwehwɛ no mfikyiri",
-                english: "If you lose your child, search behind you",
-                lesson: "Your solutions may be in your past, not just ahead.",
-                author: "Akan Wisdom"
-            },
-            {
-                akan: "Wo bɛyɛ nyansafoɔ a, dwen w'abusua ho",
-                english: "If you want to be wise, consider your family",
-                lesson: "True wisdom is thinking about how your actions affect your family and community.",
-                author: "Akan Teaching"
-            },
-            {
-                akan: "Sɛ wo si w'abɔnten a, wonhwe n'akyi",
-                english: "If you build your fence, don't forget its back",
-                lesson: "Don't only focus on what is visible; hidden things also matter.",
-                author: "Akan Proverb"
-            },
-            {
-                akan: "Ebi si na ebi ntumi nsɔ",
-                english: "Some things rise, but some can never rise",
-                lesson: "Not everyone or everything is destined for greatness. Some are meant to remain where they are.",
-                author: "Akan Wisdom"
-            },
-            {
-                akan: "Sɛ wo bɛkɔ akɔtɔ nsuo a, hwehwɛ bɔdem a ɛde wo kɔ fie nso",
-                english: "If you go to fetch water, also look for the strength to carry it home",
-                lesson: "Don't only chase success; also ensure you have the strength to sustain it.",
-                author: "Akan Teaching"
-            },
-            {
-                akan: "Sɛ afɔrebɔdeɛ mu y'ayi w'abusua no, na woate ase a, fa wo ho kɔ",
-                english: "If your family has been chosen as a sacrifice, and you are aware, take yourself away",
-                lesson: "When you sense danger in your surroundings, remove yourself before it's too late.",
-                author: "Akan Proverb"
-            },
-            {
-                akan: "Sika nyɛ nipa na ɛyɛ ne suban",
-                english: "Money is not a person, but it reflects their character",
-                lesson: "The way someone handles money reveals their true nature.",
-                author: "Akan Wisdom"
-            },
-            {
-                akan: "Nyansa wɔ wɔ sika mu, nanso ɔbrɛfo ntumi mfa",
-                english: "Wisdom exists even in money, but a poor person cannot access it",
-                lesson: "Intelligence alone does not guarantee success; resources also play a role.",
-                author: "Akan Teaching"
-            },
-            {
-                akan: "Asoɔden wɔ nkonim, na ebinom ho yɛ na yɛtumi wo hɔ",
-                english: "Stubbornness leads to victory, but some people suffer from it",
-                lesson: "Being persistent is good, but too much stubbornness can bring destruction.",
-                author: "Akan Proverb"
-            },
-            {
-                akan: "Nsu na ɛkɔ asuo, nanso abɔdeɛ nyinaa ho da mu",
-                english: "Water always flows to the river, but all creatures depend on it",
-                lesson: "Power and influence attract attention, but they also bear responsibility.",
-                author: "Akan Wisdom"
-            },
-            {
-                akan: "Wo nsa bɛsan akɔ hye a, kɔto mu wo ho na fa nyansa",
-                english: "If your hand will return to fire, dip yourself in wisdom first",
-                lesson: "If you must take a risk, prepare yourself with knowledge and strategy.",
-                author: "Akan Teaching"
-            },
-            {
-                akan: "Dua a ɛsi kwaeɛ mu na nsuo bɔ ho yie",
-                english: "The tree that stands alone in the forest receives the most rain",
-                lesson: "When you stand out, you bear the weight of both blessings and challenges.",
-                author: "Akan Proverb"
-            },
-            {
-                akan: "Sɛ aboa pɔnkɔ sua a, ne ho bɔ no",
-                english: "When a wild horse learns, it suffers in the process",
-                lesson: "Gaining wisdom and discipline is often painful but necessary.",
-                author: "Akan Wisdom"
-            },
-            {
-                akan: "Ɛnyɛ wo na wɔdi wo akyi, na ɛyɛ wo suban",
-                english: "It is not you they follow, but your character",
-                lesson: "People are drawn to you based on how you treat them.",
-                author: "Akan Teaching"
-            },
-            {
-                akan: "Akokɔ a ɔnnwe ne to no, ɔnhyɛ ne nsa ho",
-                english: "A chicken that does not eat its feces should not step in it",
-                lesson: "If you reject something, don't associate yourself with it.",
-                author: "Akan Proverb"
-            },
-            {
-                akan: "Wo yɛ gyata wɔ wo fie, nanso wo yɛ aboa wɔ abɔnten",
-                english: "You are a lion at home, but an animal outside",
-                lesson: "True strength is measured in unfamiliar territories, not in comfort zones.",
-                author: "Akan Wisdom"
-            },
-            {
-                akan: "Nsuo betu a, na ɛfiri ne nsɛmma",
-                english: "When water breaks its course, it starts from the cracks",
-                lesson: "Small issues, if ignored, lead to major disasters.",
-                author: "Akan Teaching"
-            },
-            {
-                akan: "Wo gye anomaa anaa wo gye ne ntaban?",
-                english: "Do you want the bird, or do you want its wings?",
-                lesson: "Be clear about what you truly desire; sometimes, appearances are deceiving.",
-                author: "Akan Proverb"
-            },
-            {
-                akan: "Wobɔ dua a, nyansa na ɛka ho",
-                english: "When you plant a tree, wisdom must accompany it",
-                lesson: "Every action should be backed by careful thought.",
-                author: "Akan Wisdom"
-            },
-            {
-                akan: "Ɔbaa tena fie yɛ hyehye na ɔmfa n'ase mmɔ",
-                english: "A woman who sits at home in suffering should not blame her feet for not moving",
-                lesson: "If you are in a bad situation, you must take action to change it.",
-                author: "Akan Teaching"
-            },
-            {
-                akan: "W'ankasa wo sɛe wo dua a, nsuo nsoa no bio",
-                english: "If you destroy your own tree, rain will not water it again",
-                lesson: "If you ruin your opportunities, even nature won't help you.",
-                author: "Akan Proverb"
-            },
-            {
-                akan: "Abɔfra a ɔnte aseɛ, na ɔnnim sɛ abosom wɔ fie",
-                english: "A child who does not listen does not know that gods live in the house",
-                lesson: "Disobedience blinds you to the power and wisdom around you.",
-                author: "Akan Wisdom"
-            },
-            {
-                akan: "Sɛ wowɔ nsɛm a, ma wo ho nsɛpɛ",
-                english: "If you carry words, leave room for silence too",
-                lesson: "Wisdom is knowing when to speak and when to remain silent.",
-                author: "Akan Teaching"
+                author: "Akan Holographic Teaching"
             }
         ];
 
@@ -1055,76 +936,274 @@
         let usedSayings = [];
         let isPaused = false;
 
-        function getRandomAkanSaying() {
-            // If all sayings have been used, reset the used sayings array
+        // Custom Cursor
+        function initCustomCursor() {
+            const cursor = document.querySelector('.cursor');
+            const cursorFollower = document.querySelector('.cursor-follower');
+            let mouseX = 0, mouseY = 0;
+            let cursorX = 0, cursorY = 0;
+            let followerX = 0, followerY = 0;
+            let isMoving = false;
+            let moveTimeout;
+
+            // Smooth cursor tracking with requestAnimationFrame
+            function updateCursor() {
+                // Smooth interpolation for main cursor
+                cursorX += (mouseX - cursorX) * 0.8;
+                cursorY += (mouseY - cursorY) * 0.8;
+                
+                // Smoother interpolation for follower
+                followerX += (mouseX - followerX) * 0.15;
+                followerY += (mouseY - followerY) * 0.15;
+
+                cursor.style.left = cursorX + 'px';
+                cursor.style.top = cursorY + 'px';
+                cursorFollower.style.left = followerX + 'px';
+                cursorFollower.style.top = followerY + 'px';
+
+                requestAnimationFrame(updateCursor);
+            }
+
+            // Mouse move event with throttling
+            let lastMoveTime = 0;
+            document.addEventListener('mousemove', (e) => {
+                const now = Date.now();
+                if (now - lastMoveTime > 16) { // ~60fps
+                    mouseX = e.clientX;
+                    mouseY = e.clientY;
+                    lastMoveTime = now;
+                    
+                    // Track movement state
+                    isMoving = true;
+                    clearTimeout(moveTimeout);
+                    moveTimeout = setTimeout(() => {
+                        isMoving = false;
+                    }, 100);
+                }
+            });
+
+            // Click effects
+            document.addEventListener('mousedown', () => {
+                cursor.classList.add('clicking');
+                cursorFollower.classList.add('clicking');
+            });
+
+            document.addEventListener('mouseup', () => {
+                cursor.classList.remove('clicking');
+                cursorFollower.classList.remove('clicking');
+            });
+
+            // Hover effects for interactive elements
+            const interactiveElements = document.querySelectorAll('button, .hologram-container, .control-btn');
+            interactiveElements.forEach(element => {
+                element.addEventListener('mouseenter', () => {
+                    cursor.classList.add('hovering');
+                    cursorFollower.classList.add('hovering');
+                });
+                
+                element.addEventListener('mouseleave', () => {
+                    cursor.classList.remove('hovering');
+                    cursorFollower.classList.remove('hovering');
+                });
+            });
+
+            // Enhanced mouse trail effect
+            let trailCount = 0;
+            document.addEventListener('mousemove', (e) => {
+                if (isMoving && Math.random() > 0.7 && trailCount < 3) {
+                    createMouseTrail(e.clientX, e.clientY);
+                    trailCount++;
+                    setTimeout(() => trailCount--, 200);
+                }
+            });
+
+            // Start the animation loop
+            updateCursor();
+
+            // Hide default cursor on interactive elements
+            document.body.style.cursor = 'none';
+        }
+
+        function createMouseTrail(x, y) {
+            const trail = document.createElement('div');
+            trail.className = 'mouse-trail';
+            trail.style.left = x + 'px';
+            trail.style.top = y + 'px';
+            
+            // Add some randomness to trail position
+            const offsetX = (Math.random() - 0.5) * 10;
+            const offsetY = (Math.random() - 0.5) * 10;
+            trail.style.transform = `translate(calc(-50% + ${offsetX}px), calc(-50% + ${offsetY}px))`;
+            
+            document.body.appendChild(trail);
+
+            setTimeout(() => {
+                if (trail.parentNode) {
+                    trail.remove();
+                }
+            }, 1000);
+        }
+
+        // Create Enhanced Stars
+        function createStars() {
+            const starsContainer = document.querySelector('.stars');
+            for (let i = 0; i < 300; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                if (Math.random() > 0.9) {
+                    star.classList.add('special');
+                }
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.width = Math.random() * 4 + 1 + 'px';
+                star.style.height = star.style.width;
+                star.style.setProperty('--duration', Math.random() * 4 + 2 + 's');
+                starsContainer.appendChild(star);
+            }
+        }
+
+        // Create Enhanced Floating Particles
+        function createParticles() {
+            const particlesContainer = document.querySelector('.particles');
+            for (let i = 0; i < 80; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                if (Math.random() > 0.7) {
+                    particle.classList.add('energy');
+                }
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.setProperty('--duration', Math.random() * 15 + 20 + 's');
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Create Enhanced Data Stream
+        function createDataStream() {
+            const dataStream = document.querySelector('.data-stream');
+            for (let i = 0; i < 30; i++) {
+                const line = document.createElement('div');
+                line.className = 'data-line';
+                line.style.left = Math.random() * 100 + '%';
+                line.style.setProperty('--duration', Math.random() * 8 + 5 + 's');
+                dataStream.appendChild(line);
+            }
+        }
+
+        // Create Enhanced Quantum Particles
+        function createQuantumParticles() {
+            const quantumContainer = document.querySelector('.quantum-particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'quantum-particle';
+                if (Math.random() > 0.6) {
+                    particle.classList.add('blue');
+                } else if (Math.random() > 0.3) {
+                    particle.classList.add('green');
+                }
+                particle.style.setProperty('--x', Math.random() * window.innerWidth + 'px');
+                particle.style.setProperty('--y', Math.random() * window.innerHeight + 'px');
+                particle.style.setProperty('--duration', Math.random() * 12 + 6 + 's');
+                quantumContainer.appendChild(particle);
+            }
+        }
+
+        // Generate Random Wisdom with Enhanced Effects
+        function generateWisdom() {
             if (usedSayings.length === akanSayings.length) {
                 usedSayings = [];
             }
 
-            // Get available sayings (ones that haven't been used)
             const availableSayings = akanSayings.filter((_, index) => !usedSayings.includes(index));
-            
-            // Get random saying from available ones
             const randomIndex = Math.floor(Math.random() * availableSayings.length);
             const saying = availableSayings[randomIndex];
-            
-            // Add the index of this saying to used sayings
             const originalIndex = akanSayings.indexOf(saying);
             usedSayings.push(originalIndex);
             
-            document.querySelector('.quote-content').innerHTML = `
-                <strong>${saying.akan}</strong>
-                "${saying.english}"
-            `;
-            
-            document.querySelector('.quote-details').innerHTML = `
-                <p><em>Lesson: ${saying.lesson}</em></p>
-                <p>- ${saying.author}</p>
-            `;
+            // Show loading animation
+            const loading = document.querySelector('.loading');
+            loading.style.display = 'block';
+
+            // Add sound effect (if supported)
+            if (window.AudioContext || window.webkitAudioContext) {
+                playGenerateSound();
+            }
+
+            setTimeout(() => {
+                const quoteDisplay = document.querySelector('.quote-display');
+                quoteDisplay.innerHTML = `
+                    <div class="quote-akan">${saying.akan}</div>
+                    <div class="quote-english">"${saying.english}"</div>
+                    <div class="quote-lesson">${saying.lesson}</div>
+                    <div class="quote-author">- ${saying.author}</div>
+                `;
+                loading.style.display = 'none';
+            }, 1500);
         }
 
+        // Sound Effects
+        function playGenerateSound() {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+
+                oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+                oscillator.frequency.exponentialRampToValueAtTime(200, audioContext.currentTime + 0.5);
+
+                gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.5);
+            } catch (e) {
+                // Fallback if audio fails
+            }
+        }
+
+        // Auto Update Function
         function startAutoUpdate() {
-            // Clear any existing interval
             if (autoUpdateInterval) {
                 clearInterval(autoUpdateInterval);
             }
-            // Only start interval if not paused
             if (!isPaused) {
-                autoUpdateInterval = setInterval(getRandomAkanSaying, 10000);
+                autoUpdateInterval = setInterval(generateWisdom, 10000);
             }
         }
 
+        // Toggle Pause
         function togglePause() {
             isPaused = !isPaused;
             const pauseBtn = document.querySelector('.pause-btn');
             
             if (isPaused) {
                 clearInterval(autoUpdateInterval);
-                pauseBtn.textContent = 'Resume Auto-Update';
-                pauseBtn.classList.add('paused');
+                pauseBtn.textContent = 'RESUME MATRIX';
+                pauseBtn.classList.add('active');
             } else {
                 startAutoUpdate();
-                pauseBtn.textContent = 'Pause Auto-Update';
-                pauseBtn.classList.remove('paused');
+                pauseBtn.textContent = 'PAUSE MATRIX';
+                pauseBtn.classList.remove('active');
             }
         }
 
-        function shareQuote() {
-            const quoteContent = document.querySelector('.quote-content').textContent;
-            const lesson = document.querySelector('.quote-details em').textContent;
-            const author = document.querySelector('.quote-details p:last-child').textContent;
+        // Share Function
+        function shareWisdom() {
+            const quoteAkan = document.querySelector('.quote-akan').textContent;
+            const quoteEnglish = document.querySelector('.quote-english').textContent;
+            const quoteLesson = document.querySelector('.quote-lesson').textContent;
+            const quoteAuthor = document.querySelector('.quote-author').textContent;
             
-            const shareText = `${quoteContent}\n\n${lesson}\n\n${author}`;
-            const shareUrl = window.location.href;
+            const shareText = `${quoteAkan}\n\n${quoteEnglish}\n\n${quoteLesson}\n\n${quoteAuthor}`;
 
-            // Check if Web Share API is available
             if (navigator.share) {
                 navigator.share({
-                    title: 'Akan Wisdom',
+                    title: 'Akan Quantum Wisdom',
                     text: shareText,
-                    url: shareUrl
-                }).catch((error) => {
-                    console.log('Error sharing:', error);
+                    url: window.location.href
+                }).catch(() => {
                     copyToClipboard(shareText);
                 });
             } else {
@@ -1132,37 +1211,55 @@
             }
         }
 
+        // Copy to Clipboard
         function copyToClipboard(text) {
             navigator.clipboard.writeText(text).then(() => {
                 const shareBtn = document.querySelector('.share-btn');
-                const toast = document.querySelector('.share-toast');
+                const toast = document.querySelector('.toast');
                 
-                shareBtn.textContent = 'Copied!';
-                shareBtn.classList.add('copied');
+                shareBtn.textContent = 'TRANSMITTED!';
+                shareBtn.classList.add('active');
                 toast.classList.add('show');
                 
                 setTimeout(() => {
-                    shareBtn.textContent = 'Share Wisdom';
-                    shareBtn.classList.remove('copied');
+                    shareBtn.textContent = 'SHARE QUANTUM';
+                    shareBtn.classList.remove('active');
                     toast.classList.remove('show');
                 }, 2000);
-            }).catch(err => {
-                console.error('Failed to copy text: ', err);
             });
         }
 
+        // Initialize Everything
+        function init() {
+            createStars();
+            createParticles();
+            createDataStream();
+            createQuantumParticles();
+            initCustomCursor();
+        }
+
+        // Event Listeners
         document.querySelector('.enter-btn').addEventListener('click', function() {
-            document.querySelector('.intro').style.display = 'none';
-            document.querySelector('.main').style.display = 'flex';
+            const intro = document.querySelector('.intro');
+            const main = document.querySelector('.main');
+            
+            intro.classList.add('fade-out');
+            setTimeout(() => {
+                intro.style.display = 'none';
+                main.style.display = 'block';
+            }, 1000);
         });
 
         document.querySelector('.generate-btn').addEventListener('click', function() {
-            getRandomAkanSaying();
+            generateWisdom();
             startAutoUpdate();
         });
 
         document.querySelector('.pause-btn').addEventListener('click', togglePause);
-        document.querySelector('.share-btn').addEventListener('click', shareQuote);
+        document.querySelector('.share-btn').addEventListener('click', shareWisdom);
+
+        // Initialize on load
+        window.addEventListener('load', init);
     </script>
 </body>
 </html>
